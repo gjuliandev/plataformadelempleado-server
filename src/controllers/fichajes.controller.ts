@@ -43,6 +43,29 @@ export const getFichajesByEmpleado = (req: Request, res: Response) => {
     });
 }
 
+export const getFichajesByContenedor = (req: Request, res: Response) => {
+    
+    const { contenedor_id } = req.params;
+    const query = `SELECT * FROM fichajes f
+                INNER JOIN empleados e
+                ON f.empleado_id = e.id
+                WHERE e.contenedor_id = ${contenedor_id}
+                ORDER BY f.fecha_hora_in DESC`;
+
+    MySql.ejecutarQuery(query, [], (err: any, fichajes: any) => {
+        if (err) {
+            return res.status(400).json({
+                msg: err
+            });
+        }
+
+        res.status(200).json({
+            payload: fichajes
+        });
+    });
+}
+
+
 export const getFichaje = (req: Request, res: Response) => {
 
     const { id } = req.params;
