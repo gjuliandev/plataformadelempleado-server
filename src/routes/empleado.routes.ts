@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import { deleteContacto, getContactosByCliente, postContacto, putContacto } from '../controllers/contacto.controller';
-import { getEmpleado, getEmpleados, postEmpleado } from '../controllers/empleados.controller';
+import { getEmpleado, getEmpleados, postEmpleado, putEmpleado } from '../controllers/empleados.controller';
 
 const routes = Router();
 
-routes.get    ( '/:idEmpledo',  getEmpleado    );
-routes.get    ( '/',            getEmpleados    );
-routes.post   ( '/'           , postEmpleado   );
-routes.put    ( '/:idEmpledo',  putContacto    );
-routes.delete ( '/:idEmpledo',  deleteContacto );
+routes.get    ( '/:empleado_id',    getEmpleado    );
+routes.get    ( '/',                getEmpleados    );
+routes.post   ( '/'           ,     postEmpleado   );
+routes.put    ( '/:empleado_id',    putEmpleado    );
+// routes.delete ( '/:empleado_id',    deleteContacto );
 
 export default routes;
