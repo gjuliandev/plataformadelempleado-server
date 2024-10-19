@@ -209,6 +209,25 @@ export const actualizarAvatar = (id: number, img: string) => {
     });
 };
 
+export const cambiarEstado = (req: Request, res: Response) => {
+  const {empleado_id, estado} = req.body;
+  
+  const query = `UPDATE empleados SET estado = ${estado} WHERE id = ${empleado_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+
+};
+
 const eliminarAvatar = (id: number) => {
   return new Promise((resolve, reject) => {
     getEmpleadoById(id)
