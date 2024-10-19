@@ -42,7 +42,9 @@ export const getFichajesByEmpleado = (req: Request, res: Response) => {
 
 export const getFichajesByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
-  const query = `SELECT * FROM fichajes f
+  const query = `SELECT f.id as fichaje_id, f.empleado_id, f.source_in, f.persona_fichaje_in, f.fecha_hora_in, f.mensaje_in,
+                f.fecha_hora_out, f.mensaje_out, f.source_out, f.duracion, e.nombre, e.apellido1, e.apellido2        
+                FROM fichajes f
                 INNER JOIN empleados e
                 ON f.empleado_id = e.id
                 WHERE e.contenedor_id = ${contenedor_id}
@@ -126,40 +128,30 @@ export const postFichaje = (req: Request, res: Response) => {
 };
 
 export const putFichaje = (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { fichaje_id } = req.params;
   const { body } = req;
 
-  getFichajeById(Number(id))
-    .then((oldEmpleado: any) => {
-      const nombre = body.nombre || oldEmpleado[0].nombre;
-      const role = body.role || oldEmpleado[0].role;
-      const telefono = body.telefono || oldEmpleado[0].telefono;
+  const query = `UPDATE fichajes 
+                SET source_in =  ${body.source_in}, 
+                    fecha_hora_in =  '${body.fecha_hora_in}', 
+                    fecha_hora_out =  '${body.fecha_hora_out}', 
+                    source_out = ${body.source_out}
+                    WHERE id = ${fichaje_id}`;
 
-      const query = `UPDATE empleados SET nombre =  '${nombre}', role =  '${role}', telefono =  '${telefono}' WHERE _id = ${id}`;
-
-      MySql.ejecutarQuery(query, [], (err: any, result: any) => {
-        if (err) {
-          return res.status(400).json({
-            msg: "Error en la actualización: " + err,
-            ok: true,
-            id,
-            body,
-          });
-        }
-
-        return res.status(200).json({
-          msj: "Se ha actualizado el empleado",
-        });
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
         msg: "Error en la actualización: " + err,
         ok: true,
-        id,
+        fichaje_id,
         body,
       });
+    }
+
+    return res.status(200).json({
+      msj: "Se ha actualizado el fichaje",
     });
+  });
 };
 
 export const deleteFichaje = (req: Request, res: Response) => {
