@@ -210,11 +210,15 @@ export const actualizarAvatar = (id: number, img: string) => {
 };
 
 export const cambiarEstado = (req: Request, res: Response) => {
-  const {empleado_id, estado} = req.body;
-  
-  const query = `UPDATE empleados SET estado = ${estado} WHERE id = ${empleado_id}`;
+  const { empleado_id, deleted_at } = req.body;
 
-  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+  const query = `UPDATE empleados 
+                SET deleted_at = ?
+                WHERE id = ${empleado_id}`;
+
+  const campos = [deleted_at];
+
+  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,
@@ -225,7 +229,6 @@ export const cambiarEstado = (req: Request, res: Response) => {
       payload: result,
     });
   });
-
 };
 
 const eliminarAvatar = (id: number) => {
