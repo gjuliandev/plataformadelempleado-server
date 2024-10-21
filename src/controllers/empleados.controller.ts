@@ -41,9 +41,9 @@ export const getEmpleadosByContenedor = (req: Request, res: Response) => {
 };
 
 export const getEmpleado = (req: Request, res: Response) => {
-  const { id } = req.params;
+  const { empleado_id } = req.params;
 
-  const query = `SELECT * FROM empleados WHERE id = ${id} LIMIT 1`;
+  const query = `SELECT * FROM empleados WHERE id = ${empleado_id} LIMIT 1`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
