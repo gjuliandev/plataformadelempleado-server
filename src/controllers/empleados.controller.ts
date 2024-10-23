@@ -120,48 +120,27 @@ export const putEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
   const { body } = req;
 
-  const codigo = body.codigo || "";
-  const apellido1 = body.apellido1 || "";
-  const apellido2 = body.apellido2 || "";
-  const nombre = body.nombre || "";
-  const documento = body.documento || "";
-  const telefono = body.telefono || "";
-  const email = body.email || "";
-  const usuario = body.usuario || "";
-  const contrasena = md5(body.contrasena) || "";
-  const domicilio = body.domicilio || "";
-  const poblacion = body.poblacion || "";
-  const provincia = body.provincia || "";
-  const codPostal = body.codPostal || "";
-  const fecha_nacimiento = moment(body.fecha_nacimiento).format("YYYY-MM-DD") || "";
-  const observaciones = body.observaciones || "";
-  const fecha_alta = moment(body.fecha_alta).format("YYYY-MM-DD") || "";
-  const puesto = body.puesto || "";
-  const color = body.color || "";
+  const codigo = body.codigo || null;
+  const apellido1 = body.apellido1 || null;
+  const apellido2 = body.apellido2 || null;
+  const nombre = body.nombre || null;
+  const documento = body.documento || null;
+  const telefono = body.telefono || null;
+  const email = body.email || null;
+  const fecha_nacimiento = moment(body.fecha_nacimiento).format("YYYY-MM-DD") || null;
+  const departamento = body.departamento || null;
+  const domicilio = body.domicilio || null;
+  const poblacion = body.poblacion || null;
+  const provincia = body.provincia || null;
+  const codPostal = body.codPostal || null;
 
-  const query = `CALL sp_update_empleado (
-        IF ('${codigo}' = '' , NULL, '${codigo}'),
-        IF ('${documento}' = '' , NULL, '${documento}'),
-        IF ('${nombre}' = '' , NULL, '${nombre}'),
-        IF ('${apellido1}' = '' , NULL, '${apellido1}'),
-        IF ('${apellido2}'  = '', NULL, '${apellido2}'),
-        IF ('${fecha_nacimiento}' = '' , NULL, '${fecha_nacimiento}'),
-        IF ('${domicilio}' = '' , NULL, '${domicilio}'),
-        IF ('${poblacion}' = '' , NULL, '${poblacion}'),
-        IF ('${provincia}' = '' , NULL, '${provincia}'),
-        IF ('${codPostal}' = '' , NULL, '${codPostal}'),
-        IF ('${telefono}' = '' , NULL, '${telefono}'),
-        IF ('${email}' = '' , NULL, '${email}'),
-        IF ('${usuario}' = '' , NULL, '${usuario}'),
-        IF ('${contrasena}' = '' , NULL, '${contrasena}'),
-        IF ('${color}' = '' , NULL, '${color}'),
-        IF ('${fecha_alta}' = '' , NULL, '${fecha_alta}'),
-        IF ('${puesto}' = '' , NULL, '${puesto}'),
-        IF ('${observaciones}' = '' , NULL, '${observaciones}'),
-        ${empleado_id}
-    )`;
+  const query = `UPDATE empleados SET codigo = ?, apellido1 = ?, apellido2 = ?
+  , nombre=?, documento=?, telefono=?, email=?, fecha_nacimiento=?, departamento=?
+  , domicilio=?, poblacion=?, provincia=?, codPostal=? WHERE id = ${empleado_id}`;
 
-  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+  const campos = [codigo, apellido1, apellido2, nombre, documento, telefono, email, fecha_nacimiento, departamento, domicilio, poblacion, provincia, codPostal];
+
+  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,
