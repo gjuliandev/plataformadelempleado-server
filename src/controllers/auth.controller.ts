@@ -5,7 +5,14 @@ import md5 from "md5";
 export const login = async (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `SELECT * FROM empleados WHERE ( usuario = '${body.usuario}' ) LIMIT 1`;
+  const query = `SELECT e.nombre, e.usuario, e.email, e.avatar, e.contrasena, c.nombreFiscal as contenedor
+                 FROM empleados e
+                 INNER JOIN contenedores c
+                 ON e.contenedor_id = c.id
+                 WHERE ( e.usuario = '${body.usuario}' ) 
+                 LIMIT 1`;
+
+                 console.log(query)
 
   MySql.ejecutarQuery(query, [], (err: any, usuarioDB: any) => {
     if (err) {
@@ -18,14 +25,14 @@ export const login = async (req: Request, res: Response) => {
     if (!usuarioDB[0]) {
       return res.status(400).json({
         ok: false,
-        msg: "no se ha encontrado al usuario",
+        msg: "Error en usuario y/o contraseña",
       });
     } else {
       // Checkeamos las password encriptada
 
       if (md5(body.contrasena) !== usuarioDB[0].contrasena) {
         return res.status(400).json({
-          msg: "Credenciales incorrectas",
+          msg: "Error en contraseña y/o usuario",
         });
       }
 
@@ -44,7 +51,9 @@ export const resetPasword = (req: Request, res: Response) => {
   // encriptar la password para que coincida
   const password = md5(body.newpassword);
 
-  const query = `UPDATE empleados SET contrasena = '${password}' WHERE id = ${empleado_id}`;
+  const query = `UPDATE empleados 
+                 SET contrasena = '${password}' 
+                 WHERE id = ${empleado_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
