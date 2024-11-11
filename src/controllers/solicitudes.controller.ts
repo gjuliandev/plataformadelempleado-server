@@ -3,7 +3,7 @@ import MySql from "../db/mysql";
 
 export const getSolicitudesByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
-  const query = `SELECT c.id as contenedor_id, e.usuario, s.*
+  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.*
                 FROM contenedores c
                 INNER JOIN empleados e
                 ON c.id = e.contenedor_id
@@ -71,12 +71,50 @@ export const getSolicitud = (req: Request, res: Response) => {
 export const postSolicitud = (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = "INSERT INTO solicitudes (tipo_id, empleado_id, comentarios, allDay, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?)";
-  const campos = [body.tipo_id, body.empleado_id, body.comentarios, body.allDay, body.fecha_inicio, body.fecha_fin];
+  const query = "INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.fecha_inicio, body.fecha_fin];
 
   // tipo_id = 1 Vacaciones, 2 Asuntos propios;
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
+export const validarSolicitud = (req: Request, res: Response) => {
+  const { solicitud_id } = req.params;
+
+  const query = `UPDATE solicitudes SET estado_id = 2
+                 WHERE id = ${solicitud_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
+export const rechazarSolicitud = (req: Request, res: Response) => {
+  const { solicitud_id } = req.params;
+
+  const query = `UPDATE solicitudes SET estado_id = 3
+                 WHERE id = ${solicitud_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,
