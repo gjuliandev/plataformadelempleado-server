@@ -3,7 +3,11 @@ import MySql from "../db/mysql";
 
 export const getSolicitudesByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
-  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.*
+  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.*,
+                  CASE 
+                    WHEN allDay = 0 THEN time_format(TIMEDIFF(fecha_fin, fecha_inicio),'%H:%i')
+                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                  END AS duracion
                 FROM contenedores c
                 INNER JOIN empleados e
                 ON c.id = e.contenedor_id
@@ -28,7 +32,11 @@ export const getSolicitudesByContenedor = (req: Request, res: Response) => {
 export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-  const query = `SELECT c.id as contenedor_id, e.usuario, s.*
+  const query = `SELECT c.id as contenedor_id, e.usuario, s.*,
+                  CASE 
+                    WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
+                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                  END AS duracion
                 FROM contenedores c
                 INNER JOIN empleados e
                 ON c.id = e.contenedor_id
@@ -53,7 +61,13 @@ export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
 export const getSolicitud = (req: Request, res: Response) => {
   const { solicitud_id } = req.params;
 
-  const query = `SELECT * FROM solicitudes WHERE id = ${solicitud_id} LIMIT 1`;
+  const query = `SELECT *,
+                  CASE 
+                    WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
+                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                  END AS duracion 
+                FROM solicitudes 
+                WHERE id = ${solicitud_id} LIMIT 1`;
 
   MySql.ejecutarQuery(query, [], (err: any, fichaje: any) => {
     if (err) {
@@ -127,6 +141,26 @@ export const rechazarSolicitud = (req: Request, res: Response) => {
   });
 };
 
+export const updateResolucion = (req: Request, res: Response) => {
+  const { solicitud_id } = req.params;
+  const { resolucion } = req.body;
+
+  const query = `UPDATE solicitudes SET resolucion = '${resolucion}'
+                 WHERE id = ${solicitud_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
 export const deleteSolicitud = (req: Request, res: Response) => {
   const { solicitud_id } = req.params;
 
@@ -146,7 +180,6 @@ export const deleteSolicitud = (req: Request, res: Response) => {
 };
 
 export const getTiposSolicitud = (req: Request, res: Response) => {
-  
   const query = `SELECT id, nombre FROM aux_tipo_solicitud`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
@@ -163,7 +196,6 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
 };
 
 export const getStatusSolicitud = (req: Request, res: Response) => {
-  
   const query = `SELECT id, estado FROM aux_status_solicitud`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
@@ -178,4 +210,3 @@ export const getStatusSolicitud = (req: Request, res: Response) => {
     });
   });
 };
-

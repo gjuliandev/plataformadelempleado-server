@@ -8,6 +8,7 @@ import {
   getTiposSolicitud,
   postSolicitud,
   rechazarSolicitud,
+  updateResolucion,
   validarSolicitud,
 } from "../controllers/solicitudes.controller";
 
@@ -18,10 +19,11 @@ routes.get("/tipos-solicitud", getTiposSolicitud);
 routes.get("/:contenedor_id/contenedor", getSolicitudesByContenedor);
 routes.get("/:empleado_id/empleado", getSolicitudesByEmpleado);
 routes.get("/:solicitud_id", getSolicitud);
-
+routes.patch("/:solicitud_id/rechazar", rechazarSolicitud);
+routes.patch("/:solicitud_id/resolucion", updateResolucion);
 routes.post("/", postSolicitud);
 routes.patch("/:solicitud_id/validar", validarSolicitud);
-routes.patch("/:solicitud_id/rechazar", rechazarSolicitud);
+
 routes.delete("/:solicitud_id", deleteSolicitud);
 
 export default routes;
