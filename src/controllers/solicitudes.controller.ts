@@ -144,3 +144,38 @@ export const deleteSolicitud = (req: Request, res: Response) => {
     });
   });
 };
+
+export const getTiposSolicitud = (req: Request, res: Response) => {
+  
+  const query = `SELECT id, nombre FROM aux_tipo_solicitud`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
+export const getStatusSolicitud = (req: Request, res: Response) => {
+  
+  const query = `SELECT id, estado FROM aux_status_solicitud`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
