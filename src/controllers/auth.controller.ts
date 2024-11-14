@@ -12,8 +12,6 @@ export const login = async (req: Request, res: Response) => {
                  WHERE ( e.usuario = '${body.usuario}' ) 
                  LIMIT 1`;
 
-  console.log(query);
-
   MySql.ejecutarQuery(query, [], (err: any, usuarioDB: any) => {
     if (err) {
       return res.status(400).json({
