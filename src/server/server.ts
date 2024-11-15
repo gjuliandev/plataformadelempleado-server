@@ -16,6 +16,7 @@ import fichajeRouter from "../routes/fichaje.route";
 import accesoRouter from "../routes/acceso.routes";
 import solicitudRouter from "../routes/solicitud.route";
 import contenedorRouter from "../routes/contenedor.routes";
+import emailRouter from "../routes/email.routes";
 
 import cors from "cors";
 
@@ -51,6 +52,7 @@ class Server {
     accesos: "/api/accesos",
     solicitudes: "/api/solicitudes",
     contenedores: "/api/contenedores",
+    email: "/api/email",
   };
 
   constructor(puerto: number) {
@@ -85,6 +87,7 @@ class Server {
     this.app.use(this.apiPaths.accesos, accesoRouter);
     this.app.use(this.apiPaths.solicitudes, solicitudRouter);
     this.app.use(this.apiPaths.contenedores, contenedorRouter);
+    this.app.use(this.apiPaths.email, emailRouter);
   }
 
   // Definición de los Middlewares que utiliza la aplicación
