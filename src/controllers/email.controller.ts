@@ -3,7 +3,7 @@ const nodemailer = require("nodemailer");
 
 export const sendEmail = async (req: Request, res: Response) => {
   const { body } = req;
-  const { destinatario, subject } = req.body;
+  const { destinatario, subject, emailBody } = req.body;
 
   if (destinatario) {
     let transporter = nodemailer.createTransport({
@@ -24,11 +24,9 @@ export const sendEmail = async (req: Request, res: Response) => {
         subject: `${subject}`, // Subject line
 
         html:
-          `<p>Estimado,</p>` +
-          `<p>Se ha producido un nuevo acceso desde ordenador</p>` +
+          `${emailBody} `+
           `<div>---- &nbsp; </div>` +
-          `<div><strong>Plataforma del Empleado</strong>  &nbsp</div>` +
-          `<a href="mailto:plataformadelempleado@plataformadelempleado.es">Plataforma del Empleado</a>`,
+          `<div><strong>Plataforma del Empleado</strong>  &nbsp</div>` 
       })
       .then((resp: any) => {
         res.status(200).json({
