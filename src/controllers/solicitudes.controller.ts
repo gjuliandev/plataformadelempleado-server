@@ -180,7 +180,7 @@ export const deleteSolicitud = (req: Request, res: Response) => {
 };
 
 export const getTiposSolicitud = (req: Request, res: Response) => {
-  const query = `SELECT id, nombre FROM aux_tipo_solicitud`;
+  const query = `SELECT id, nombre, unidad_medida FROM aux_tipo_solicitud`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
