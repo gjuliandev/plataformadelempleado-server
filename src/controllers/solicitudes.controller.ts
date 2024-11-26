@@ -196,6 +196,31 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
   });
 };
 
+export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
+  
+  const { contenedor_id } = req.params;
+
+  const query = `SELECT ats.id, ats.nombre, ats.unidad_medida 
+                FROM aux_tipo_solicitud ats
+                INNER JOIN contadores_contenedores cc
+                ON ats.id = cc.contador_id
+                INNER JOIN contenedores c
+                ON cc.contenedor_id = c.id
+                WHERE c.id = ${contenedor_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
 export const getStatusSolicitud = (req: Request, res: Response) => {
   const query = `SELECT id, estado FROM aux_status_solicitud`;
 
