@@ -215,8 +215,8 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
 
   const query = `SELECT s.empleado_id,
                   SUM(CASE
-                      WHEN allDay = 0 THEN TIMEDIFF(feha_fin, fecha_inicio)
-                      WHEN allDay = 1 THEN DATEDIFF(feha_fin, fecha_inicio)
+                      WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
+                      WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
                     END) duracion
                   FROM solicitudes s
                   INNER JOIN aux_status_solicitud ass
