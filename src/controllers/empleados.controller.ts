@@ -210,6 +210,36 @@ export const cambiarEstado = (req: Request, res: Response) => {
   });
 };
 
+export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
+  const { empleado_id, tipo_solicitud } = req.body;
+
+  const query = `SELECT s.empleado_id,
+                  SUM(CASE
+                      WHEN allDay = 0 THEN TIMEDIFF(feha_fin, fecha_inicio)
+                      WHEN allDay = 1 THEN DATEDIFF(feha_fin, fecha_inicio)
+                    END) duracion
+                  FROM solicitudes s
+                  INNER JOIN aux_status_solicitud ass
+                  ON s.estado_id = ass.id
+                  WHERE ass.internal_type = 'STATUS_VALIDATED'
+                    AND empleado_id = ${empleado_id}
+                    AND tipo_id = ${tipo_solicitud}
+                  GROUP BY s.empleado_id`;
+
+                  
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });              
+}
+
 const eliminarAvatar = (id: number) => {
   return new Promise((resolve, reject) => {
     getEmpleadoById(id)
