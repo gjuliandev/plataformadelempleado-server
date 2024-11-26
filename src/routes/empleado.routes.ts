@@ -3,9 +3,10 @@ import { cambiarEstado, getEmpleado, getEmpleados, getEmpleadosByContenedor, get
 
 const routes = Router();
 
-routes.get("/:empleado_id", getEmpleado);
+
 routes.get("/contenedor/:contenedor_id", getEmpleadosByContenedor);
 routes.get("/unidades-by-solicitud", getNumUnidadesBySolicitud);
+routes.get("/:empleado_id", getEmpleado);
 routes.post("/", postEmpleado);
 routes.put("/:empleado_id", putEmpleado);
 routes.patch("/:empleado_id/cambiar-estado", cambiarEstado);
