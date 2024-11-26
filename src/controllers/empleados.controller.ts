@@ -211,7 +211,7 @@ export const cambiarEstado = (req: Request, res: Response) => {
 };
 
 export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
-  const { empleado_id, tipo_solicitud } = req.body;
+  const { empleado_id, tipo_solicitud } = req.params;
 
   const query = `SELECT s.empleado_id,
                   SUM(CASE

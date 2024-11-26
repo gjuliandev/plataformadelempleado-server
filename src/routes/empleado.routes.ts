@@ -5,7 +5,7 @@ const routes = Router();
 
 
 routes.get("/contenedor/:contenedor_id", getEmpleadosByContenedor);
-routes.get("/unidades-by-solicitud", getNumUnidadesBySolicitud);
+routes.get("/:empleado_id/unidades-by-solicitud/:tipo_solicitud", getNumUnidadesBySolicitud);
 routes.get("/:empleado_id", getEmpleado);
 routes.post("/", postEmpleado);
 routes.put("/:empleado_id", putEmpleado);
