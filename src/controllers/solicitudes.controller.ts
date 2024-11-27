@@ -32,7 +32,7 @@ export const getSolicitudesByContenedor = (req: Request, res: Response) => {
 export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-  const query = `SELECT c.id as contenedor_id, e.usuario, s.*,
+  const query = `SELECT c.id as contenedor_id, e.usuario, s.*, ats.*,
                   CASE 
                     WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
                     WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
@@ -42,6 +42,8 @@ export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
                 ON c.id = e.contenedor_id
                 INNER JOIN solicitudes s
                 ON s.empleado_id = e.id
+                INNER JOIN aux_tipo_solicitud ats
+                ON s.tipo_id = ats.id
                 WHERE e.id = ${empleado_id}
                 ORDER BY s.fecha_inicio DESC`;
 
