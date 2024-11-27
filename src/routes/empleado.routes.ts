@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { cambiarEstado, getEmpleado, getEmpleados, getEmpleadosByContenedor, getNumUnidadesBySolicitud, postEmpleado, putEmpleado } from "../controllers/empleados.controller";
+import { cambiarEstado, getEmpleado, getEmpleados, getEmpleadosByContenedor, getNumUnidadesByBolsaEmpleado, getNumUnidadesBySolicitud, postEmpleado, putEmpleado } from "../controllers/empleados.controller";
 
 const routes = Router();
 
 
 routes.get("/contenedor/:contenedor_id", getEmpleadosByContenedor);
 routes.get("/:empleado_id/unidades-by-solicitud/:tipo_solicitud", getNumUnidadesBySolicitud);
+routes.get("/:empleado_id/bolsa-horas-empleado/:tipo_solicitud", getNumUnidadesByBolsaEmpleado);
 routes.get("/:empleado_id", getEmpleado);
 routes.post("/", postEmpleado);
 routes.put("/:empleado_id", putEmpleado);

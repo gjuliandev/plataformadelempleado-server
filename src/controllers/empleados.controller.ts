@@ -210,6 +210,8 @@ export const cambiarEstado = (req: Request, res: Response) => {
   });
 };
 
+
+// unidades que ha utilizado de ese tipos de solicitud el empleado
 export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
   const { empleado_id, tipo_solicitud } = req.params;
 
@@ -239,6 +241,33 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
     });
   });              
 }
+
+// Unidades de ese tipo de solicitud que tiene el empleado en la bolsa por las razones que sean, se pueden poner de forma manual desde el frontal
+export const getNumUnidadesByBolsaEmpleado = (req: Request, res: Response ) => {
+  const { empleado_id, tipo_solicitud } = req.params;
+
+  const query = `SELECT bce.id, bce.empleado_id, bce.contador_id, bce.unidades AS unidades_bolsa, bce.anio, bce.fecha_caducidad, cc.contador_id, cc.contenedor_id, cc.unidades AS unidades_contador, cc.mes_caducidad, cc.dia_caducidad
+                  FROM bolsa_contadores_empledos bce
+                  INNER JOIN contadores_contenedores cc
+                  ON cc.id = bce.contador_id
+                  INNER JOIN aux_tipo_solicitud ats
+                  ON ats.id = cc.contador_id
+                  WHERE bce.empleado_id = ${empleado_id} AND bce.contador_id = ${tipo_solicitud} AND CURDATE() < bce.fecha_caducidad AND bce.unidades > 0`;
+
+                  
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });              
+}
+
 
 const eliminarAvatar = (id: number) => {
   return new Promise((resolve, reject) => {
