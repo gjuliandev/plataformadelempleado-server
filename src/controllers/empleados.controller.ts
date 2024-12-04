@@ -23,9 +23,13 @@ export const getEmpleados = (req: Request, res: Response) => {
 };
 
 export const getEmpleadosByContenedor = (req: Request, res: Response) => {
+
+  const { contenedor_id } = req.params;
+
   const query = `SELECT  e.* FROM empleados e
                     INNER JOIN contenedores c
-                    ON c.id = e.contenedor_id`;
+                    ON c.id = e.contenedor_id
+                    WHERE c.id = ${contenedor_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleados: any) => {
     if (err) {
