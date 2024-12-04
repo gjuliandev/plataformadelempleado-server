@@ -45,8 +45,20 @@ export const getEmpleadosByContenedor = (req: Request, res: Response) => {
 };
 
 export const getContadoresByEmpleado = ( req: Request, res: Response) => {
+
   const { empleado_id } = req.params;
-  const query = '';
+  const query = `SELECT  e.id AS empleado_id, e.codigo, CONCAT(e.nombre, ' ', e.apellido1)  AS nombre_empleado, c.id AS contenedor_id, c.nombreComercial, cc.unidades, cc.mes_caducidad, cc.dia_caducidad
+                , ats.id AS tipo_solicitud_id, ats.nombre AS tipo_solicitud, bce.id AS bolsa_contadores_empledos_id, bce.unidades AS contador_bolsa
+                FROM empleados e
+                INNER JOIN contenedores c
+                ON c.id = e.contenedor_id
+                INNER JOIN contadores_contenedores cc
+                ON c.id = cc.contenedor_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = cc.contador_id
+                LEFT JOIN  bolsa_contadores_empledos bce
+                ON cc.contador_id = bce.contador_id
+                WHERE e.id = ${empleado_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {

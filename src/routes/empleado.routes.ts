@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cambiarEstado, getContadoresByEmpleado, getEmpleado, getEmpleados, getEmpleadosByContenedor, getNumUnidadesByBolsaEmpleado, getNumUnidadesBySolicitud, postEmpleado, putEmpleado } from "../controllers/empleados.controller";
+import { cambiarEstado, getContadoresByEmpleado, getEmpleado,  getEmpleadosByContenedor, getNumUnidadesByBolsaEmpleado, getNumUnidadesBySolicitud, postEmpleado, putEmpleado } from "../controllers/empleados.controller";
 
 const routes = Router();
 
