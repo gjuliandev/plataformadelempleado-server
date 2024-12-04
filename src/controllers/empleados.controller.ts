@@ -44,6 +44,23 @@ export const getEmpleadosByContenedor = (req: Request, res: Response) => {
   });
 };
 
+export const getContadoresByEmpleado = ( req: Request, res: Response) => {
+  const { empleado_id } = req.params;
+  const query = '';
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+}
+
 export const getEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
