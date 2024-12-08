@@ -199,7 +199,6 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
 };
 
 export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
-  
   const { contenedor_id } = req.params;
 
   const query = `SELECT ats.id, ats.nombre, ats.unidad_medida 
