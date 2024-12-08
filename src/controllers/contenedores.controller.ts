@@ -19,16 +19,18 @@ export const getContendor = (req: Request, res: Response) => {
   });
 };
 
-export const getUnidadesByContadorContenedor = (req: Request, res: Response) => {
-  const { contenedor_id, tipo_id } = req.params;
+export const getContadoresByContenedor = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
 
-  const query = `SELECT cc.id, cc.contador_id, cc.contenedor_id, cc.unidades, cc.mes_caducidad, cc.dia_caducidad 
-                  FROM contadores_contenedores cc
+  const query = `SELECT c.nombreComercial AS contenedor, ats.nombre AS nombre_solicitud, ats.alias,  aum.name AS unidad, atd.tipo_dia, ats.fecha_caducidad
+                  FROM aux_tipo_solicitud ats
+                  INNER JOIN aux_unidades_medida aum
+                  ON ats.unidad_medida = aum.id
+                  LEFT JOIN aux_tipo_dia atd
+                  ON aum.tipo_dia_id = atd.id
                   INNER JOIN contenedores c
-                  ON c.id = cc.contenedor_id
-                  INNER JOIN aux_tipo_solicitud ats
-                  ON ats.id = cc.contador_id
-                  WHERE cc.contador_id = ${tipo_id} AND cc.contenedor_id = ${contenedor_id}`;
+                  ON c.id = ats.contenedor_id
+                  WHERE c.id = ${contenedor_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, contenedor: any) => {
     if (err) {
