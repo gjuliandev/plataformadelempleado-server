@@ -22,7 +22,7 @@ export const getContendor = (req: Request, res: Response) => {
 export const getContadoresByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT c.nombreComercial AS contenedor, ats.nombre AS nombre_solicitud, ats.alias,  aum.name AS unidad, atd.tipo_dia, ats.fecha_caducidad
+  const query = `SELECT c.nombreComercial AS contenedor, ats.nombre AS nombre_solicitud, ats.unidades, ats.alias,  aum.name AS unidad, atd.tipo_dia, ats.fecha_caducidad
                   FROM aux_tipo_solicitud ats
                   INNER JOIN aux_unidades_medida aum
                   ON ats.unidad_medida = aum.id
