@@ -44,3 +44,32 @@ export const getContadoresByContenedor = (req: Request, res: Response) => {
     });
   });
 };
+
+export const putContenedor = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
+  const { body } = req;
+
+  const query = `UPDATE contenedores 
+                  SET nombreFiscal =  '${body.nombreFiscal}', 
+                      nombreComercial =  '${body.nombreComercial}', 
+                      cif =  '${body.cif}', 
+                      telefono = '${body.telefono}',
+                      telefonoSOS = '${body.telefonoSOS}',
+                      email= '${body.email}'
+                      WHERE id = ${contenedor_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: "Error en la actualización: " + err,
+        ok: true,
+        contenedor_id,
+        body,
+      });
+    }
+
+    return res.status(200).json({
+      msj: "Se ha actualizado el fichaje",
+    });
+  });
+};
