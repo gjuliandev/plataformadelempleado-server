@@ -6,7 +6,7 @@ export const getCalendariosByContendor = (req: Request, res: Response ) =>  {
 
     const { contenedor_id } = req.params;
 
-    const query = `SELECT cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral  
+    const query = `SELECT cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color 
                     FROM calendarios cal
                     INNER JOIN contenedores c
                     ON c.id = cal.contenedor_id
@@ -29,7 +29,7 @@ export const getDiasFestivosByCalendario = (req: Request, res: Response ) =>  {
 
     const {calendario_id } = req.params;
 
-    const query = `SELECT cal.id AS calendario_id, cal.nombre, cal.isGeneral, df.id AS dia_id, df.fecha, df.comentario 
+    const query = `SELECT cal.id AS calendario_id, cal.nombre, cal.isGeneral, cal.color, df.id AS dia_id, df.fecha, df.comentario 
                     FROM calendarios cal
                     INNER JOIN dias_festivos df
                     ON cal.id = df.calendario_id
@@ -54,7 +54,7 @@ export const getDiasFestivosByEmpleado = (req: Request, res: Response ) =>  {
 
     const { empleado_id  } = req.params;
 
-    const query = `SELECT df.id AS dia_id, df.fecha, df.comentario, cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral
+    const query = `SELECT df.id AS dia_id, df.fecha, df.comentario, cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color
                     FROM contenedores c
                     INNER JOIN calendarios cal
                     ON c.id = cal.contenedor_id
