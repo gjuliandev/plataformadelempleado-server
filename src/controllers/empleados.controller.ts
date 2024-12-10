@@ -23,7 +23,6 @@ export const getEmpleados = (req: Request, res: Response) => {
 };
 
 export const getEmpleadosByContenedor = (req: Request, res: Response) => {
-
   const { contenedor_id } = req.params;
 
   const query = `SELECT  e.* FROM empleados e
@@ -44,8 +43,7 @@ export const getEmpleadosByContenedor = (req: Request, res: Response) => {
   });
 };
 
-export const getContadoresByEmpleado = ( req: Request, res: Response) => {
-
+export const getContadoresByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
   const query = `SELECT 
                   e.id AS empleado_id, 
@@ -80,11 +78,28 @@ export const getContadoresByEmpleado = ( req: Request, res: Response) => {
       payload: empleado,
     });
   });
-}
+};
+
+export const getAusenciasByEmpleado = (req: Request, res: Response) => {
+  const { empleado_id } = req.params;
+  const query = `
+                WHERE e.id = ${empleado_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
 
 // Unidades de ese tipo de solicitud que tiene el empleado en la bolsa por las razones que sean, se pueden poner de forma manual desde el frontal
-export const getContadoresByBolsaEmpleado = ( req: Request, res: Response) => {
-
+export const getContadoresByBolsaEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
   const query = `SELECT 
                   e.id AS empleado_id, 
@@ -118,7 +133,7 @@ export const getContadoresByBolsaEmpleado = ( req: Request, res: Response) => {
       payload: empleado,
     });
   });
-}
+};
 
 export const getEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
@@ -290,9 +305,8 @@ export const cambiarEstado = (req: Request, res: Response) => {
   });
 };
 
-
 // unidades que ha utilizado de ese tipos de solicitud el empleado
-export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
+export const getNumUnidadesBySolicitud = (req: Request, res: Response) => {
   const { empleado_id, tipo_solicitud } = req.params;
 
   const query = `SELECT s.empleado_id,
@@ -308,7 +322,6 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
                     AND tipo_id = ${tipo_solicitud}
                   GROUP BY s.empleado_id`;
 
-                  
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
@@ -319,8 +332,8 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response ) => {
     res.status(200).json({
       payload: result,
     });
-  });              
-}
+  });
+};
 
 const eliminarAvatar = (id: number) => {
   return new Promise((resolve, reject) => {
