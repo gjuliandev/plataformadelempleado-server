@@ -73,3 +73,27 @@ export const putContenedor = (req: Request, res: Response) => {
     });
   });
 };
+
+// =============CONTADORES (Tipo de Solicictud) ========================
+export const postTipoSolicitud = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
+  const { body } = req;
+
+  const query = `INSERT INTO aux_tipo_solicitud (contenedor_id, nombre, alias, unidades, unidad_medida, dia_caducidad, mes_caducidad, anio_caducidad) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+  const campos = [body.contenedor_id, body.nombre, body.alias, body.unidades, body.unidad_medida, body.dia_caducidad, body.mes_caducidad, body.anio_caducidad];
+
+  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: "Error en la inserción: " + err,
+        ok: true,
+        contenedor_id,
+        body,
+      });
+    }
+
+    return res.status(200).json({
+      msj: "Se ha insertado el nuevo contador",
+    });
+  });
+};
