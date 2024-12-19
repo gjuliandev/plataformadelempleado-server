@@ -87,9 +87,9 @@ export const getSolicitud = (req: Request, res: Response) => {
 export const postSolicitud = (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, fecha_inicio, fecha_fin) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.fecha_inicio, body.fecha_fin];
+  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, nDias, nHoras, fecha_inicio, fecha_fin) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.nDias, body.nHoras, body.fecha_inicio, body.fecha_fin];
 
   // tipo_id = 1 Vacaciones, 2 Asuntos propios;
 
