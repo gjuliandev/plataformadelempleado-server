@@ -172,6 +172,59 @@ export const getContadoresByBolsaEmpleadoAndTipo = (req: Request, res: Response)
   });
 };
 
+export const getUnidadesConsumidas = (req: Request, res: Response) => {
+ 
+  const query = `SELECT empleado_id, tipo_id, e.nombre AS empleado, ats.nombre AS solicitud, CASE 
+                  WHEN allDay = 0 THEN SUM(nHoras)
+                  WHEN allDay = 1 THEN SUM(nDias)
+                  END AS duracion 
+                FROM solicitudes s
+                INNER JOIN empleados e
+                ON e.id = s.empleado_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = s.tipo_id
+                GROUP BY empleado_id, tipo_id`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
+export const getUnidadesConsumidasByEmpleado = (req: Request, res: Response) => {
+  const { empleado_id, tipo_id } = req.params;
+  const query = `SELECT empleado_id, tipo_id, e.nombre AS empleado, ats.nombre AS solicitud, CASE 
+                  WHEN allDay = 0 THEN SUM(nHoras)
+                  WHEN allDay = 1 THEN SUM(nDias)
+                  END AS duracion 
+                FROM solicitudes s
+                INNER JOIN empleados e
+                ON e.id = s.empleado_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = s.tipo_id
+                WHERE empleado_id = ${empleado_id}
+                GROUP BY empleado_id, tipo_id`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
 export const getEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
