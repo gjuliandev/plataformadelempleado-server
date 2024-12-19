@@ -34,8 +34,8 @@ export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
 
   const query = `SELECT c.id as contenedor_id, e.usuario, s.*, ats.*,
                   CASE 
-                    WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
-                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                    WHEN allDay = 0 THEN nHoras
+                    WHEN allDay = 1 THEN nDias
                   END AS duracion
                 FROM contenedores c
                 INNER JOIN empleados e
