@@ -48,26 +48,18 @@ export const getDiasFestivosByCalendario = (req: Request, res: Response) => {
 export const getDiasFestivosByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-  const query = `SELECT df.id AS dia_id, df.fecha, df.comentario, cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color
-                    FROM contenedores c
-                    INNER JOIN calendarios cal
-                    ON c.id = cal.contenedor_id
-                    INNER JOIN dias_festivos df
-                    ON cal.id = df.calendario_id
-                    WHERE cal.isGeneral = 1 AND c.id = (SELECT c1.id FROM contenedores c1 INNER JOIN empleados e1 ON e1.contenedor_id = c1.id WHERE e1.id = ${empleado_id})
-                    UNION
-                    SELECT df.id AS dia_id, df.fecha, df.comentario, cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral
-                    FROM empleados e
-                    INNER JOIN calendarios_empleado ce
+  const query = `SELECT df.fecha AS fecha FROM calendarios c
+                INNER JOIN dias_festivos df
+                ON c.id = df.calendario_id
+                WHERE c.isGeneral = 1 
+                OR c.id IN (SELECT c1.id FROM calendarios_empleado ce
+                    INNER JOIN calendarios c1
+                    ON c1.id = ce.calendario_id
+                    INNER JOIN empleados e
                     ON e.id = ce.empleado_id
-                    INNER JOIN calendarios cal
-                    ON cal.id = ce.calendario_id
-                    INNER JOIN dias_festivos df
-                    ON cal.id = df.calendario_id
-                    WHERE e.id = ${empleado_id} AND 
-                    cal.contenedor_id = (SELECT c.id FROM contenedores c INNER JOIN empleados e ON e.contenedor_id = c.id WHERE e.id = ${empleado_id})`;
+                    WHERE e.id = ${empleado_id})`;
 
-  MySql.ejecutarQuery(query, [], (err: any, contacto: any) => {
+  MySql.ejecutarQuery(query, [], (err: any, fechas: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,
@@ -75,7 +67,7 @@ export const getDiasFestivosByEmpleado = (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      payload: contacto,
+      payload: fechas,
     });
   });
 };

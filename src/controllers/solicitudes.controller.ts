@@ -201,13 +201,13 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
 export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT ats.id, ats.nombre, ats.unidad_medida 
-                FROM aux_tipo_solicitud ats
-                INNER JOIN contadores_contenedores cc
-                ON ats.id = cc.contador_id
-                INNER JOIN contenedores c
-                ON cc.contenedor_id = c.id
-                WHERE c.id = ${contenedor_id}`;
+  const query = `SELECT ats.id, ats.nombre, aum.name AS unidad_medida
+                  FROM aux_tipo_solicitud ats
+                  INNER JOIN aux_unidades_medida aum
+                  ON ats.unidad_medida = aum.id
+                  INNER JOIN contenedores c
+                  ON ats.contenedor_id = c.id
+                  WHERE c.id = ${contenedor_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
