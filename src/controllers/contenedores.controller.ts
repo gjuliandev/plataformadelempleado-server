@@ -97,3 +97,20 @@ export const postTipoSolicitud = (req: Request, res: Response) => {
     });
   });
 };
+
+export const getUnidadesMedida = (req: Request, res: Response) => {
+  const query = `SELECT * FROM aux_unidades_medida`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: "Error en la consulta: " + err,
+        ok: false,
+      });
+    }
+
+    return res.status(200).json({
+      payload: result,
+    });
+  });
+};
