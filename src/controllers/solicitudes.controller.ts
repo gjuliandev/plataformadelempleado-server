@@ -34,8 +34,8 @@ export const getSolicitudesByEmpleado = (req: Request, res: Response) => {
 
   const query = `SELECT c.id as contenedor_id, e.usuario, s.*, ats.*,
                   CASE 
-                    WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
-                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                    WHEN allDay = 0 THEN nHoras
+                    WHEN allDay = 1 THEN nDias
                   END AS duracion
                 FROM contenedores c
                 INNER JOIN empleados e
@@ -87,9 +87,9 @@ export const getSolicitud = (req: Request, res: Response) => {
 export const postSolicitud = (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, fecha_inicio, fecha_fin) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.fecha_inicio, body.fecha_fin];
+  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, nDias, nHoras, fecha_inicio, fecha_fin) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.nDias, body.nHoras, body.fecha_inicio, body.fecha_fin];
 
   // tipo_id = 1 Vacaciones, 2 Asuntos propios;
 
@@ -201,13 +201,13 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
 export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT ats.id, ats.nombre, ats.unidad_medida 
-                FROM aux_tipo_solicitud ats
-                INNER JOIN contadores_contenedores cc
-                ON ats.id = cc.contador_id
-                INNER JOIN contenedores c
-                ON cc.contenedor_id = c.id
-                WHERE c.id = ${contenedor_id}`;
+  const query = `SELECT ats.id, ats.nombre, aum.name AS unidad_medida
+                  FROM aux_tipo_solicitud ats
+                  INNER JOIN aux_unidades_medida aum
+                  ON ats.unidad_medida = aum.id
+                  INNER JOIN contenedores c
+                  ON ats.contenedor_id = c.id
+                  WHERE c.id = ${contenedor_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {

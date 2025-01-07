@@ -55,7 +55,8 @@ export const getContadoresByEmpleado = (req: Request, res: Response) => {
                   ats.unidades,
                   aum.name AS unidad, 
                   atd.tipo_dia, 
-                  ats.fecha_caducidad
+                  ats.fecha_caducidad,
+                  ats.esBolsa
                 FROM empleados e
                 INNER JOIN contenedores c
                 ON c.id = e.contenedor_id
@@ -121,6 +122,95 @@ export const getContadoresByBolsaEmpleado = (req: Request, res: Response) => {
                 LEFT JOIN aux_tipo_dia atd
                 ON aum.tipo_dia_id = atd.id
                 WHERE e.id = ${empleado_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
+export const getContadoresByBolsaEmpleadoAndTipo = (req: Request, res: Response) => {
+  const { empleado_id, tipo_id } = req.params;
+  const query = `SELECT 
+                  e.id AS empleado_id, 
+                  e.codigo, 
+                  CONCAT(e.nombre, ' ', e.apellido1)  AS nombre_empleado, 
+                  ats.nombre AS nombre_tipo_solicitud, 
+                  ats.alias,
+                  bce.unidades,
+                  aum.name AS unidad, 
+                  atd.tipo_dia, 
+                  bce.fecha_caducidad
+                FROM empleados e
+                INNER JOIN bolsa_contadores_empledos bce
+                ON e.id = bce.empleado_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = bce.tipo_solicitud_id
+                INNER JOIN aux_unidades_medida aum
+                ON ats.unidad_medida = aum.id
+                LEFT JOIN aux_tipo_dia atd
+                ON aum.tipo_dia_id = atd.id
+                WHERE e.id = ${empleado_id} AND ats.id = ${tipo_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
+export const getUnidadesConsumidas = (req: Request, res: Response) => {
+ 
+  const query = `SELECT empleado_id, tipo_id, e.nombre AS empleado, ats.nombre AS solicitud, CASE 
+                  WHEN allDay = 0 THEN SUM(nHoras)
+                  WHEN allDay = 1 THEN SUM(nDias)
+                  END AS duracion 
+                FROM solicitudes s
+                INNER JOIN empleados e
+                ON e.id = s.empleado_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = s.tipo_id
+                GROUP BY empleado_id, tipo_id`;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
+export const getUnidadesConsumidasByEmpleado = (req: Request, res: Response) => {
+  const { empleado_id, tipo_id } = req.params;
+  const query = `SELECT empleado_id, tipo_id, e.nombre AS empleado, ats.nombre AS solicitud, CASE 
+                  WHEN allDay = 0 THEN SUM(nHoras)
+                  WHEN allDay = 1 THEN SUM(nDias)
+                  END AS duracion 
+                FROM solicitudes s
+                INNER JOIN empleados e
+                ON e.id = s.empleado_id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = s.tipo_id
+                WHERE empleado_id = ${empleado_id}
+                GROUP BY empleado_id, tipo_id`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
@@ -311,8 +401,8 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response) => {
 
   const query = `SELECT s.empleado_id,
                   SUM(CASE
-                      WHEN allDay = 0 THEN TIMEDIFF(fecha_fin, fecha_inicio)
-                      WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                      WHEN allDay = 0 THEN nHoras
+                      WHEN allDay = 1 THEN nDias
                     END) duracion
                   FROM solicitudes s
                   INNER JOIN aux_status_solicitud ass
