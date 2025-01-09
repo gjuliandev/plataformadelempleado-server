@@ -75,6 +75,21 @@ export const getDiasFestivosByEmpleado = (req: Request, res: Response) => {
 export const postCalendario = (req: Request, res: Response) => {
   const { body } = req;
 
-  const codigo = body.codigo || "";
-  const apellido1 = body.apellido1 || "";
+  const query = `INSERT INTO  calendarios (nombre, color, isGeneral, contenedor_id)
+                  VALUES (?, ?, ?, ?)`;
+
+  const campos = [body.nombre, body.color, body.isGeneral, body.contenedor_id];
+
+  MySql.ejecutarQuery(query, campos, (err: any, fechas: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: fechas,
+    });
+  });
+  
 };

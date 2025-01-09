@@ -5,8 +5,10 @@ import md5 from "md5";
 export const login = async (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `SELECT e.id as empleado_id, e.nombre, e.usuario, e.email, e.avatar, e.contrasena, c.id as contenedor_id, c.nombreFiscal as contenedor
+  const query = `SELECT e.id as empleado_id, e.nombre, e.usuario, e.email, e.avatar, e.contrasena, r.rol, c.id as contenedor_id, c.nombreFiscal as contenedor
                  FROM empleados e
+                 INNER JOIN aux_roles r
+                 ON e.rol_id = r.id
                  INNER JOIN contenedores c
                  ON e.contenedor_id = c.id
                  WHERE ( e.usuario = '${body.usuario}' ) 
