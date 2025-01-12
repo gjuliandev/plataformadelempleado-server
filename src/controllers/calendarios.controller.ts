@@ -26,7 +26,7 @@ export const getCalendariosByContendor = (req: Request, res: Response) => {
 export const getDiasFestivosByCalendario = (req: Request, res: Response) => {
   const { calendario_id } = req.params;
 
-  const query = `SELECT cal.id AS calendario_id, cal.nombre, cal.isGeneral, cal.color, df.id AS dia_id, df.fecha, df.comentario
+  const query = `SELECT cal.id AS calendario_id, cal.nombre, cal.isGeneral, cal.color, cal.calendario_uuid, df.id AS dia_id, df.fecha, df.comentario
                     FROM calendarios cal
                     INNER JOIN dias_festivos df
                     ON cal.id = df.calendario_id
