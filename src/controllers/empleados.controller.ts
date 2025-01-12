@@ -6,8 +6,13 @@ import fs from "fs";
 import moment from "moment";
 import md5 from "md5";
 
-export const getEmpleados = (req: Request, res: Response) => {
-  const query = "SELECT * FROM empleados";
+export const getEmpleadosByContenedor = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
+
+  const query = `SELECT  e.* FROM empleados e
+                    INNER JOIN contenedores c
+                    ON c.id = e.contenedor_id
+                    WHERE c.id = ${contenedor_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleados: any) => {
     if (err) {
@@ -22,13 +27,8 @@ export const getEmpleados = (req: Request, res: Response) => {
   });
 };
 
-export const getEmpleadosByContenedor = (req: Request, res: Response) => {
-  const { contenedor_id } = req.params;
-
-  const query = `SELECT  e.* FROM empleados e
-                    INNER JOIN contenedores c
-                    ON c.id = e.contenedor_id
-                    WHERE c.id = ${contenedor_id}`;
+export const getEmpleados = (req: Request, res: Response) => {
+  const query = "SELECT * FROM empleados";
 
   MySql.ejecutarQuery(query, [], (err: any, empleados: any) => {
     if (err) {
@@ -82,9 +82,15 @@ export const getContadoresByEmpleado = (req: Request, res: Response) => {
 };
 
 export const getAusenciasByEmpleado = (req: Request, res: Response) => {
+
   const { empleado_id } = req.params;
-  const query = `
-                WHERE e.id = ${empleado_id}`;
+  
+  const query = `SELECT * FROM solicitudes s
+                INNER JOIN aux_tipo_solicitud ats
+                ON s.tipo_id = ats.id
+                INNER JOIN aux_status_solicitud ass
+                ON s.estado_id = ass.id
+                WHERE s.empleado_id = ${empleado_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
