@@ -4,7 +4,7 @@ import MySql from "../db/mysql";
 export const getCalendariosByContendor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color, cal.uuid
+  const query = `SELECT cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color, cal.calendario_uuid
                     FROM calendarios cal
                     INNER JOIN contenedores c
                     ON c.id = cal.contenedor_id
