@@ -85,11 +85,14 @@ export const getAusenciasByEmpleado = (req: Request, res: Response) => {
 
   const { empleado_id } = req.params;
   
-  const query = `SELECT * FROM solicitudes s
+  const query = `SELECT ats.nombre as nombre_solicitud, s.allDay, s.fecha_inicio, s.fecha_fin, e.empleado_uuid
+                FROM solicitudes s
                 INNER JOIN aux_tipo_solicitud ats
                 ON s.tipo_id = ats.id
                 INNER JOIN aux_status_solicitud ass
                 ON s.estado_id = ass.id
+                INNER JOIN empleados e
+                ON s.empleado_id = e.id
                 WHERE s.empleado_id = ${empleado_id}`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
