@@ -12,10 +12,12 @@ import {
   getUnidadesConsumidasByEmpleado,
   getUnidadesConsumidas,
   getAusenciasByEmpleado,
+  getEstadisticasContadoresByContenedores,
 } from "../controllers/empleados.controller";
 
 const routes = Router();
 
+routes.get("/estadisticas-contadores-by-contenedor/:contenedor_id", getEstadisticasContadoresByContenedores);
 routes.get("/ausencias/:empleado_id", getAusenciasByEmpleado);
 routes.get("/contadores/:empleado_id", getContadoresByEmpleado); 
 routes.get("/bolsa-horas-empleado/:empleado_id/", getContadoresByBolsaEmpleado);
