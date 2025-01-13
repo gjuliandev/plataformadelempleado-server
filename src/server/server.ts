@@ -18,7 +18,7 @@ import solicitudRouter from "../routes/solicitud.route";
 import contenedorRouter from "../routes/contenedor.routes";
 import emailRouter from "../routes/email.routes";
 import calendarioRouter from "../routes/calendario.routes";
-
+import auxTablesRouter from "../routes/aux-tables.routes";
 
 import cors from "cors";
 
@@ -55,7 +55,8 @@ class Server {
     solicitudes: "/api/solicitudes",
     contenedores: "/api/contenedores",
     email: "/api/email",
-    calendario: '/api/calendarios'
+    calendario: '/api/calendarios',
+    auxTables: '/api/aux-tables/'
   };
 
   constructor(puerto: number) {
@@ -92,6 +93,7 @@ class Server {
     this.app.use(this.apiPaths.contenedores, contenedorRouter);
     this.app.use(this.apiPaths.email, emailRouter);
     this.app.use(this.apiPaths.calendario, calendarioRouter);
+    this.app.use(this.apiPaths.auxTables, auxTablesRouter);
   }
 
   // Definición de los Middlewares que utiliza la aplicación
