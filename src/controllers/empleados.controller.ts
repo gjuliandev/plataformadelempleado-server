@@ -256,7 +256,7 @@ export const getEmpleado = (req: Request, res: Response) => {
 export const getEstadisticasContadoresByContenedores = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name,
+  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name AS unidad_medida,
                 CASE 
                   WHEN allDay = 0 THEN SUM(nHoras) 
                   WHEN allDay = 1 THEN SUM(s.nDias) 
@@ -273,7 +273,7 @@ export const getEstadisticasContadoresByContenedores = (req: Request, res: Respo
                 INNER JOIN aux_unidades_medida aum
                 ON ats.unidad_medida = aum.id
                   WHERE e.contenedor_id = ${contenedor_id}
-                  GROUP BY e.nombre, s.tipo_id, ats.nombre `;
+                  GROUP BY e.nombre, s.tipo_id, ats.nombre, aum.name `;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
@@ -291,7 +291,7 @@ export const getEstadisticasContadoresByContenedores = (req: Request, res: Respo
 export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name,
+    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name AS unidad_medida,
                   CASE 
                     WHEN allDay = 0 THEN SUM(nHoras) 
                     WHEN allDay = 1 THEN SUM(s.nDias) 
@@ -308,7 +308,7 @@ export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response)
                   INNER JOIN aux_unidades_medida aum
                   ON ats.unidad_medida = aum.id
                   WHERE e.id = ${empleado_id}
-                  GROUP BY e.nombre, s.tipo_id, ats.nombre `;
+                  GROUP BY e.nombre, s.tipo_id, ats.nombre, aum.name `;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
