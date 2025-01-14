@@ -256,7 +256,42 @@ export const getEmpleado = (req: Request, res: Response) => {
 export const getEstadisticasContadoresByContenedores = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, 
+  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name,
+                CASE 
+                  WHEN allDay = 0 THEN SUM(nHoras) 
+                  WHEN allDay = 1 THEN SUM(s.nDias) 
+                END AS disfrutadas,
+                CASE 
+                  WHEN allDay = 0 THEN ats.unidades - SUM(nHoras) 
+                  WHEN allDay = 1 THEN ats.unidades - SUM(s.nDias) 
+                END AS disponibles
+                FROM solicitudes s
+                INNER JOIN empleados e
+                ON s.empleado_id = e.id
+                INNER JOIN aux_tipo_solicitud ats
+                ON ats.id = s.tipo_id
+                INNER JOIN aux_unidades_medida aum
+                ON ats.unidad_medida = aum.id
+                  WHERE e.contenedor_id = ${contenedor_id}
+                  GROUP BY e.nombre, s.tipo_id, ats.nombre `;
+
+  MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: empleado,
+    });
+  });
+};
+
+export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response) => {
+  const { empleado_id } = req.params;
+
+    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name,
                   CASE 
                     WHEN allDay = 0 THEN SUM(nHoras) 
                     WHEN allDay = 1 THEN SUM(s.nDias) 
@@ -270,7 +305,9 @@ export const getEstadisticasContadoresByContenedores = (req: Request, res: Respo
                   ON s.empleado_id = e.id
                   INNER JOIN aux_tipo_solicitud ats
                   ON ats.id = s.tipo_id
-                  WHERE e.contenedor_id = ${contenedor_id}
+                  INNER JOIN aux_unidades_medida aum
+                  ON ats.unidad_medida = aum.id
+                  WHERE e.id = ${empleado_id}
                   GROUP BY e.nombre, s.tipo_id, ats.nombre `;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
