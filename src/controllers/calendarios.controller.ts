@@ -116,4 +116,46 @@ export const postDiaFestivo = (req: Request, res: Response) => {
   
 };
 
+export const assignCalendarToEmpleado = (req: Request, res: Response) => {
+  const { body } = req;
+
+  const query = `INSERT INTO  calendarios_empleados (empleado_id, calendario_id)
+                  VALUES (?, ?)`;
+
+  const campos = [body.empleado_id, body.calendario_id];
+
+  MySql.ejecutarQuery(query, campos, (err: any, fechas: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: fechas,
+    });
+  });
+};
+
+export const removeAssignCalendarToEmpleado = (req: Request, res: Response) => {
+  
+  const { body } = req;
+
+  const query = `DELETE FROM calendarios_empleados WHERE empleado_id = ? AND calendario_id = ?`;
+
+  const campos = [body.empleado_id, body.calendario_id];
+
+  MySql.ejecutarQuery(query, campos, (err: any, fechas: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: fechas,
+    });
+  });
+};
+
 
