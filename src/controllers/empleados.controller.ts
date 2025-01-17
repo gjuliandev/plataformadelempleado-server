@@ -291,7 +291,7 @@ export const getEstadisticasContadoresByContenedores = (req: Request, res: Respo
 export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, ats.nombre, ats.unidades, aum.name AS unidad_medida,
+    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, s.fecha_inicio as inicio, s.fecha_fin as fin, ats.nombre, ats.unidades, aum.name AS unidad_medida,
                   CASE 
                     WHEN allDay = 0 THEN SUM(nHoras) 
                     WHEN allDay = 1 THEN SUM(s.nDias) 
@@ -308,7 +308,7 @@ export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response)
                   INNER JOIN aux_unidades_medida aum
                   ON ats.unidad_medida = aum.id
                   WHERE e.id = ${empleado_id}
-                  GROUP BY e.nombre, s.tipo_id, ats.nombre, aum.name `;
+                  GROUP BY e.nombre, s.tipo_id, s.fecha_inicio, s.fecha_fin, ats.nombre, aum.name `;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
