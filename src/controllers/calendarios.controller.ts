@@ -116,24 +116,44 @@ export const postDiaFestivo = (req: Request, res: Response) => {
   
 };
 
-export const assignCalendarToEmpleado = (req: Request, res: Response) => {
+export const assignCalendarToEmpleados = (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `INSERT INTO  calendarios_empleados (empleado_id, calendario_id)
-                  VALUES (?, ?)`;
+ 
 
-  const campos = [body.empleado_id, body.calendario_id];
+  MySql.instance.pool.getConnection( (err, conn) => {
 
-  MySql.ejecutarQuery(query, campos, (err: any, fechas: any) => {
-    if (err) {
-      return res.status(400).json({
-        msg: err,
+    if(err) { throw err};
+
+    const query = `INSERT INTO  calendarios_empleado (empleado_id, calendario_id)
+    VALUES (?, ?)`;
+   
+
+    conn.beginTransaction( (err) => {
+      
+      body.empleados_ids.forEach( (empleado: any) => {
+        const campos = [empleado, body.calendario_id];
+        conn.query(query, campos, (error, results, fields) => {
+          if(error) { 
+            conn.rollback( )
+          }
+          else {
+            conn.commit( (err) => {
+              if(err) {
+                conn.rollback();
+              }
+            });
+          }
+        })
       });
-    }
 
-    res.status(200).json({
-      payload: fechas,
+      return res.status(200).json({
+        ok: 'true',
+      });
+
+    
     });
+
   });
 };
 
@@ -152,7 +172,7 @@ export const removeAssignCalendarToEmpleado = (req: Request, res: Response) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       payload: fechas,
     });
   });
