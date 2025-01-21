@@ -201,7 +201,7 @@ export const getTiposSolicitud = (req: Request, res: Response) => {
 export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT ats.id, ats.nombre, aum.name AS unidad_medida
+  const query = `SELECT ats.id, ats.nombre, aum.name AS unidad_medida, ats.unidades, ats.fecha_caducidad
                   FROM aux_tipo_solicitud ats
                   INNER JOIN aux_unidades_medida aum
                   ON ats.unidad_medida = aum.id
