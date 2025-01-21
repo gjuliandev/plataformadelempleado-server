@@ -107,10 +107,10 @@ export const postTipoSolicitud = (req: Request, res: Response) => {
   const { body } = req;
 
   const query = `INSERT INTO aux_tipo_solicitud (contenedor_id, nombre, alias, unidades, unidad_medida, 
-                  dia_caducidad, mes_caducidad, anio_caducidad, esBolsa) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+                  fecha_caducidad,  esBolsa) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`;
   const campos = [body.contenedor_id, body.nombre, body.alias, body.unidades, body.unidad_medida, 
-                  body.dia_caducidad, body.mes_caducidad, body.anio_caducidad, body.esBolsa];
+                  body.fecha_caducidad,body.esBolsa];
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
