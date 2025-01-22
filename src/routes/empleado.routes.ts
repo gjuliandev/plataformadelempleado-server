@@ -14,6 +14,7 @@ import {
   getAusenciasByEmpleado,
   getEstadisticasContadoresByContenedores,
   getEstadisticasContadoresByEmpleado,
+  asignarContadorEmpleado,
 } from "../controllers/empleados.controller";
 
 const routes = Router();
@@ -30,6 +31,7 @@ routes.get("/unidades-disfrutadas/", getUnidadesConsumidas);
 routes.get("/contenedor/:contenedor_id", getEmpleadosByContenedor);
 routes.get("/:empleado_id", getEmpleado);
 routes.post("/", postEmpleado);
+routes.post("/asignar-contador-empleado", asignarContadorEmpleado);
 routes.put("/:empleado_id", putEmpleado);
 routes.patch("/:empleado_id/cambiar-estado", cambiarEstado);
 

@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import MySql from "../db/mysql";
 import path from "path";
 import fs from "fs";
@@ -323,6 +323,45 @@ export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response)
   });
 };
 
+export const asignarContadorEmpleado = (req: Request, res: Response) => {
+  const {body} = req;
+
+
+  MySql.instance.pool.getConnection( (err, conn) => {
+
+    if(err) { throw err};
+
+   const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades_id, fecha_caducidad)
+                  VALUES (?, ?, ?, ?)`;
+    
+
+    conn.beginTransaction( (err) => {
+      
+      body.empleados_ids.forEach( (empleado: any) => {
+        const campos = [empleado, body.contador_id, body.unidades, body.fecha_caducidad];
+        conn.query(query, campos, (error, results, fields) => {
+          if(error) { 
+            conn.rollback( )
+          }
+          else {
+            conn.commit( (err) => {
+              if(err) {
+                conn.rollback();
+              }
+            });
+          }
+        })
+      });
+
+      return res.status(200).json({
+        ok: 'true',
+      });
+
+    
+    });
+
+  });
+};
 
 export const postEmpleado = (req: Request, res: Response) => {
   const { body } = req;
