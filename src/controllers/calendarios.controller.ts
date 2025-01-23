@@ -180,13 +180,11 @@ export const putDiaFestivo = (req: Request, res: Response) => {
 };
 
 export const deleteDiaFestivo = (req: Request, res: Response) => {
-  const { body } = req;
+  const { dia_festivo_id } = req.params;
 
-  const query = `DELETE FROM dias_festivos WHERE id = ?`;
+  const query = `DELETE FROM dias_festivos WHERE id = ${dia_festivo_id}`;
 
-  const campos = [body.id];
-
-  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,

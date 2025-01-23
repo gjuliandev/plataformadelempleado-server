@@ -22,7 +22,7 @@ routes.get("/calendario/:calendario_id", getDiasFestivosByCalendario);
 routes.post("/", postCalendario);
 routes.post("/dia-festivo", postDiaFestivo);
 routes.put("/dia-festivo", putDiaFestivo);
-routes.delete("/dia-festivo", deleteDiaFestivo);
+routes.delete("/dia-festivo/:dia_festivo_id", deleteDiaFestivo);
 
 routes.post("/assign-calendar", assignCalendarToEmpleados);
 routes.delete("/remove-assign-calendar", removeAssignCalendarToEmpleado);
