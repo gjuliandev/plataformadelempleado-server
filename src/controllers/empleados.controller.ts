@@ -326,26 +326,30 @@ export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response)
 export const asignarContadorEmpleado = (req: Request, res: Response) => {
   const {body} = req;
 
-
   MySql.instance.pool.getConnection( (err, conn) => {
 
     if(err) { throw err};
 
-   const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades_id, fecha_caducidad)
+   const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades, fecha_caducidad)
                   VALUES (?, ?, ?, ?)`;
     
 
     conn.beginTransaction( (err) => {
       
+      console.log('vamos a comenzar la transaccion');
+      console.log(query);
+      console.log(body);
       body.empleados_ids.forEach( (empleado: any) => {
         const campos = [empleado, body.contador_id, body.unidades, body.fecha_caducidad];
         conn.query(query, campos, (error, results, fields) => {
           if(error) { 
+            console.log(error)
             conn.rollback( )
           }
           else {
             conn.commit( (err) => {
               if(err) {
+                console.log(err)
                 conn.rollback();
               }
             });
