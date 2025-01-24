@@ -82,9 +82,8 @@ export const getContadoresByEmpleado = (req: Request, res: Response) => {
 };
 
 export const getAusenciasByEmpleado = (req: Request, res: Response) => {
-
   const { empleado_id } = req.params;
-  
+
   const query = `SELECT ats.nombre as nombre_solicitud, s.allDay, s.fecha_inicio, s.fecha_fin, e.empleado_uuid
                 FROM solicitudes s
                 INNER JOIN aux_tipo_solicitud ats
@@ -122,7 +121,7 @@ export const getContadoresByBolsaEmpleado = (req: Request, res: Response) => {
                   atd.tipo_dia, 
                   bce.fecha_caducidad
                 FROM empleados e
-                INNER JOIN bolsa_contadores_empledos bce
+                INNER JOIN bolsa_contadores_empleados bce
                 ON e.id = bce.empleado_id
                 INNER JOIN aux_tipo_solicitud ats
                 ON ats.id = bce.tipo_solicitud_id
@@ -158,7 +157,7 @@ export const getContadoresByBolsaEmpleadoAndTipo = (req: Request, res: Response)
                   atd.tipo_dia, 
                   bce.fecha_caducidad
                 FROM empleados e
-                INNER JOIN bolsa_contadores_empledos bce
+                INNER JOIN bolsa_contadores_empleados bce
                 ON e.id = bce.empleado_id
                 INNER JOIN aux_tipo_solicitud ats
                 ON ats.id = bce.tipo_solicitud_id
@@ -182,7 +181,6 @@ export const getContadoresByBolsaEmpleadoAndTipo = (req: Request, res: Response)
 };
 
 export const getUnidadesConsumidas = (req: Request, res: Response) => {
- 
   const query = `SELECT empleado_id, tipo_id, e.nombre AS empleado, ats.nombre AS solicitud, CASE 
                   WHEN allDay = 0 THEN SUM(nHoras)
                   WHEN allDay = 1 THEN SUM(nDias)
@@ -252,7 +250,6 @@ export const getEmpleado = (req: Request, res: Response) => {
   });
 };
 
-
 export const getEstadisticasContadoresByContenedores = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
@@ -291,7 +288,7 @@ export const getEstadisticasContadoresByContenedores = (req: Request, res: Respo
 export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-    const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, s.fecha_inicio as inicio, s.fecha_fin as fin, ats.nombre, ats.unidades, aum.name AS unidad_medida,
+  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, s.fecha_inicio as inicio, s.fecha_fin as fin, ats.nombre, ats.unidades, aum.name AS unidad_medida,
                   CASE 
                     WHEN allDay = 0 THEN SUM(nHoras) 
                     WHEN allDay = 1 THEN SUM(s.nDias) 
@@ -324,46 +321,44 @@ export const getEstadisticasContadoresByEmpleado = (req: Request, res: Response)
 };
 
 export const asignarContadorEmpleado = (req: Request, res: Response) => {
-  const {body} = req;
+  const { body } = req;
 
-  MySql.instance.pool.getConnection( (err, conn) => {
+  MySql.instance.pool.getConnection((err, conn) => {
+    if (err) {
+      throw err;
+    }
 
-    if(err) { throw err};
-
-   const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades, fecha_caducidad)
+    const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades, fecha_caducidad)
                   VALUES (?, ?, ?, ?)`;
-    
 
-    conn.beginTransaction( (err) => {
-      
-      console.log('vamos a comenzar la transaccion');
-      console.log(query);
-      console.log(body);
-      body.empleados_ids.forEach( (empleado: any) => {
+    conn.beginTransaction((err) => {
+      body.empleados_ids.forEach((empleado: any) => {
         const campos = [empleado, body.contador_id, body.unidades, body.fecha_caducidad];
         conn.query(query, campos, (error, results, fields) => {
-          if(error) { 
-            console.log(error)
-            conn.rollback( )
-          }
-          else {
-            conn.commit( (err) => {
-              if(err) {
-                console.log(err)
+          if (error) {
+            conn.rollback();
+            return res.status(400).json({
+              ok: "false",
+              error,
+            });
+          } else {
+            conn.commit((err) => {
+              if (err) {
                 conn.rollback();
+                return res.status(400).json({
+                  ok: "false",
+                  err,
+                });
+              } else {
+                return res.status(200).json({
+                  ok: "true",
+                });
               }
             });
           }
-        })
+        });
       });
-
-      return res.status(200).json({
-        ok: 'true',
-      });
-
-    
     });
-
   });
 };
 
