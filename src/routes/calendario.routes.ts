@@ -3,6 +3,7 @@ import {
   assignCalendarToEmpleados,
   deleteDiaFestivo,
   getCalendariosByContendor,
+  getCalendariosByEmpleado,
   getCalendariosWithDiasFestivosByContenedor,
   getDiasFestivosByCalendario,
   getDiasFestivosByEmpleado,
@@ -14,6 +15,7 @@ import {
 
 const routes = Router();
 
+routes.get("/calendarios/empleado/:empleado_id", getCalendariosByEmpleado);
 routes.get("/calendariosWithFestivos/:contenedor_id", getCalendariosWithDiasFestivosByContenedor);
 routes.get("/contenedor/:contenedor_id", getCalendariosByContendor);
 routes.get("/empleado/:empleado_id", getDiasFestivosByEmpleado);

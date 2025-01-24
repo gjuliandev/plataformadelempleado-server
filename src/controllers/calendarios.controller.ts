@@ -90,6 +90,30 @@ export const getDiasFestivosByCalendario = (req: Request, res: Response) => {
   });
 };
 
+export const getCalendariosByEmpleado = (req: Request, res: Response) => {
+  const { empleado_id } = req.params;
+
+  const query = `SELECT cal.id AS calendario_id, cal.nombre AS calendario, cal.isGeneral, cal.color, cal.calendario_uuid
+                    FROM calendarios cal
+                    INNER JOIN calendarios_empleado ce
+                    ON cal.id = ce.calendario_id
+                    INNER JOIN empleados e
+                    ON e.id = ce.empleado_id
+                    WHERE e.id = ${empleado_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, contacto: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: contacto,
+    });
+  });
+};
+
 export const getDiasFestivosByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
