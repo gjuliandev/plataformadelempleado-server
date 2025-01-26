@@ -15,6 +15,7 @@ import {
   getEstadisticasContadoresByContenedores,
   getEstadisticasContadoresByEmpleado,
   asignarContadorEmpleado,
+  getContadoresGroupByContenedorEmpleado,
 } from "../controllers/empleados.controller";
 
 const routes = Router();
@@ -24,6 +25,7 @@ routes.get("/estadisticas-contadores-by-empleado/:empleado_id", getEstadisticasC
 routes.get("/ausencias/:empleado_id", getAusenciasByEmpleado);
 routes.get("/contadores/:empleado_id", getContadoresByEmpleado); 
 routes.get("/bolsa-horas-empleado/:empleado_id/", getContadoresByBolsaEmpleado);
+routes.get('/contadores-generales-agrupados-by-empleado', getContadoresGroupByContenedorEmpleado)
 routes.get("/:empleado_id/bolsa-horas-empleado-tipo/:tipo_id/", getContadoresByBolsaEmpleadoAndTipo);
 routes.get("/:empleado_id/unidades-by-solicitud/:tipo_solicitud", getNumUnidadesBySolicitud);
 routes.get("/unidades-disfrutadas-by-empleado/:empleado_id", getUnidadesConsumidasByEmpleado);
