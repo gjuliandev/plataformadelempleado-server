@@ -147,18 +147,23 @@ export const getContadoresByBolsaEmpleado = (req: Request, res: Response) => {
 // Unidades agrupdas por empleado y por tanto por contenedor para saber lo que queda de cada uno de los contenedores que tiene la empresa. (se muestra en el panel del empleado)
 export const getContadoresGroupByContenedorEmpleado = (req: Request, res: Response) => {
   const { empleado_id, contenedor_id } = req.params;
-  const query = `SELECT ats.nombre AS nombre_tipo, ats.alias, e.id AS empleado_id, CONCAT(e.nombre, ' ', e.apellido1)  AS nombre_empleado, ats.unidades, ats.fecha_caducidad ,
+
+  const query = `SELECT ats.nombre AS nombre_tipo, ats.alias, e.id AS empleado_id, CONCAT(e.nombre, ' ', e.apellido1)  AS nombre_empleado, ats.unidades, ats.fecha_caducidad,
                   SUM(CASE 
                     WHEN allDay = 0 THEN nHoras
                     WHEN allDay = 1 THEN nDias
-                  END) disfrutadas
+                  END) disfrutadas,
+                  CASE
+                    WHEN allDay = 0 THEN ats.unidades - nHoras
+                    WHEN allDay = 1 THEN ats.unidades - nDias
+                  END disponibles
                   FROM aux_tipo_solicitud ats
                   LEFT JOIN solicitudes s
                   ON ats.id = s.tipo_id
                   LEFT JOIN empleados e
                   ON s.empleado_id = e.id
                   WHERE ats.contenedor_id = ${contenedor_id} AND (e.id = ${empleado_id} OR ISNULL(e.id) )
-                  GROUP BY ats.nombre, ats.alias, e.nombre, e.apellido1}`;
+                  GROUP BY ats.nombre, ats.alias, e.nombre, e.apellido1`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
     if (err) {
