@@ -253,7 +253,7 @@ export const getEmpleado = (req: Request, res: Response) => {
 export const getEstadisticasContadoresByContenedores = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
 
-  const query = `SELECT e.nombre AS empleado, s.tipo_id AS tipo, s.fecha_inicio as inicio, s.fecha_fin as fin, ats.nombre, ats.unidades, aum.name AS unidad_medida,
+  const query = `SELECT e.id as empleado_id, e.nombre AS empleado, s.tipo_id AS tipo, s.fecha_inicio as inicio, s.fecha_fin as fin, ats.alias, ats.nombre, ats.unidades, aum.name AS unidad_medida,
                 CASE 
                   WHEN allDay = 0 THEN SUM(nHoras) 
                   WHEN allDay = 1 THEN SUM(s.nDias) 
