@@ -7,11 +7,20 @@ class MySql {
     conectado: boolean = false;
 
     constructor() {
+        // this.pool = mysql.createPool({
+        //     host: 'plataformadelempleado.es',
+        //     user: 'ptalempleado',
+        //     password: 'RmFmB91(#)23',
+        //     database: 'portaldelempleadoDB',
+        //     multipleStatements: true
+
+        // });
+
         this.pool = mysql.createPool({
             host: 'plataformadelempleado.es',
-            user: 'ptalempleado',
-            password: 'RmFmB91(#)23',
-            database: 'portaldelempleadoDB',
+            user: 'ptalempleado_BKP',
+            password: 'K29ok7]9/4,3',
+            database: 'portaldelempleadoDB_BKP',
             multipleStatements: true
 
         });
