@@ -128,6 +128,33 @@ export const postTipoSolicitud = (req: Request, res: Response) => {
   });
 };
 
+export const putTipoSolicitud = (req: Request, res: Response) => {
+  const { contador_id } = req.params;
+  const { body } = req;
+
+  const query = `UPDATE  aux_tipo_solicitud SET 
+                nombre = ?, alias = ?, unidades = ?, fecha_caducidad = ?
+                WHERE id = ${contador_id}`;
+  
+  const campos = [ body.nombre, body.alias, body.unidades, body.fecha_caducidad];
+
+  
+
+  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: "Error en la inserción: " + err,
+        ok: true,
+        body,
+      });
+    }
+
+    return res.status(200).json({
+      msj: "Se ha insertado el nuevo contador",
+    });
+  });
+};
+
 export const getUnidadesMedida = (req: Request, res: Response) => {
   const query = `SELECT * FROM aux_unidades_medida`;
 
