@@ -84,7 +84,7 @@ export const getContadoresByEmpleado = (req: Request, res: Response) => {
 export const getAusenciasByEmpleado = (req: Request, res: Response) => {
   const { empleado_id } = req.params;
 
-  const query = `SELECT ats.nombre as nombre_solicitud, s.allDay, s.fecha_inicio, s.fecha_fin, e.empleado_uuid
+  const query = `SELECT ats.nombre as nombre_solicitud, s.allDay, s.fecha_inicio, s.fecha_fin, e.empleado_uuid, CONCAT(e.nombre, ' ', e.apellido1)  AS nombre_empleado
                 FROM solicitudes s
                 INNER JOIN aux_tipo_solicitud ats
                 ON s.tipo_id = ats.id
@@ -176,8 +176,7 @@ export const getContadoresGroupByContenedorEmpleado = (req: Request, res: Respon
       payload: empleado,
     });
   });
-}
-
+};
 
 export const getContadoresByBolsaEmpleadoAndTipo = (req: Request, res: Response) => {
   const { empleado_id, tipo_id } = req.params;
