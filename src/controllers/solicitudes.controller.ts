@@ -87,24 +87,24 @@ export const getSolicitud = (req: Request, res: Response) => {
 export const postSolicitud = (req: Request, res: Response) => {
   const { body } = req;
 
-  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, nDias, nHoras, fecha_inicio, fecha_fin) 
-                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.nDias, body.nHoras, body.fecha_inicio, body.fecha_fin];
-
+  const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, nDias, nHoras, fromBolsa, fecha_inicio, fecha_fin) 
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.nDias, body.nHoras, body.usarBolsa, body.fecha_inicio, body.fecha_fin];
+ 
   // tipo_id = 1 Vacaciones, 2 Asuntos propios;
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
-    if (err) {
-      return res.status(400).json({
-        msg: err,
-      });
-    }
+      if (err) {
+        return res.status(400).json({
+          msg: err,
+        });
+      }
 
-    res.status(200).json({
-      payload: result,
+      res.status(200).json({
+        payload: result,
+      });
     });
-  });
-};
+  };
 
 export const validarSolicitud = (req: Request, res: Response) => {
   const { solicitud_id } = req.params;

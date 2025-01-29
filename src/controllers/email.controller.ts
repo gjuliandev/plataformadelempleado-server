@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 const nodemailer = require("nodemailer");
 
 export const sendEmail = async (req: Request, res: Response) => {
-  const { body } = req;
-  const { destinatario, subject, emailBody } = req.body;
+ 
+  const { destinatario, subject, body } = req.body;
 
   if (destinatario) {
     let transporter = nodemailer.createTransport({
@@ -24,7 +24,7 @@ export const sendEmail = async (req: Request, res: Response) => {
         subject: `${subject}`, // Subject line
 
         html:
-          `${emailBody} `+
+          `${body} `+
           `<div>---- &nbsp; </div>` +
           `<div><strong>Plataforma del Empleado</strong>  &nbsp</div>` 
       })
