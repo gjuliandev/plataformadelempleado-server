@@ -24,8 +24,8 @@ routes.get("/estadisticas-contadores-by-contenedor/:contenedor_id", getEstadisti
 routes.get("/estadisticas-contadores-by-empleado/:empleado_id", getEstadisticasContadoresByEmpleado);
 routes.get("/ausencias/:empleado_id", getAusenciasByEmpleado);
 routes.get("/contadores/:empleado_id", getContadoresByEmpleado); 
-routes.get("/bolsa-horas-empleado/:empleado_id/", getContadoresByBolsaEmpleado);
-routes.get('/contadores-generales-agrupados-by-empleado/:contenedor_id/:empleado_id', getContadoresGroupByContenedorEmpleado)
+routes.get("/bolsa-horas-empleado/:empleado_id/", getContadoresByBolsaEmpleado); //Es la consulta del panel de empleado contadores bolsa
+routes.get('/contadores-generales-agrupados-by-empleado/:contenedor_id/:empleado_id', getContadoresGroupByContenedorEmpleado); //Es la consulta del panel de empleado contadores generales
 routes.get("/:empleado_id/bolsa-horas-empleado-tipo/:tipo_id/", getContadoresByBolsaEmpleadoAndTipo);
 routes.get("/:empleado_id/unidades-by-solicitud/:tipo_solicitud", getNumUnidadesBySolicitud);
 routes.get("/unidades-disfrutadas-by-empleado/:empleado_id", getUnidadesConsumidasByEmpleado);

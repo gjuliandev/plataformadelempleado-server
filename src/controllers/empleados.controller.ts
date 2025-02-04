@@ -162,7 +162,7 @@ export const getContadoresGroupByContenedorEmpleado = (req: Request, res: Respon
                   ON ats.id = s.tipo_id
                   LEFT JOIN empleados e
                   ON s.empleado_id = e.id
-                  WHERE ats.contenedor_id = ${contenedor_id} AND (e.id = ${empleado_id} OR ISNULL(e.id) )
+                  WHERE s.fromBolsa = 0 AND ats.contenedor_id = ${contenedor_id} AND (e.id = ${empleado_id} OR ISNULL(e.id) )
                   GROUP BY ats.nombre, ats.alias, e.nombre, e.apellido1`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {
