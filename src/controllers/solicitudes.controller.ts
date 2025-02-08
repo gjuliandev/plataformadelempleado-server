@@ -3,17 +3,21 @@ import MySql from "../db/mysql";
 
 export const getSolicitudesByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
-  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.*,
+  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.fecha_inicio, s.fecha_fin, s.nHoras,s.nDias, s.id,
+                        s.allDay, s.comentarios, s.estado_id, s.fromBolsa, s.resolucion,
                   CASE 
-                    WHEN allDay = 0 THEN time_format(TIMEDIFF(fecha_fin, fecha_inicio),'%H:%i')
-                    WHEN allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
-                  END AS duracion
+                    WHEN s.allDay = 0 THEN time_format(TIMEDIFF(s.fecha_fin, s.fecha_inicio),'%H:%i')
+                    WHEN s.allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
+                  END AS duracion,
+                  ats.nombre as nombre_solicitud
                 FROM contenedores c
                 INNER JOIN empleados e
                 ON c.id = e.contenedor_id
                 INNER JOIN solicitudes s
                 ON s.empleado_id = e.id
-                WHERE contenedor_id = ${contenedor_id}
+                INNER JOIN aux_tipo_solicitud ats
+                ON s.tipo_id = ats.id
+                WHERE c.id = ${contenedor_id}
                 ORDER BY s.fecha_inicio DESC`;
 
   MySql.ejecutarQuery(query, [], (err: any, fichajes: any) => {
