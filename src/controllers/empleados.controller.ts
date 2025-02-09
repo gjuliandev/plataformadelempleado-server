@@ -250,7 +250,9 @@ export const getUnidadesConsumidasByEmpleado = (req: Request, res: Response) => 
                 ON e.id = s.empleado_id
                 INNER JOIN aux_tipo_solicitud ats
                 ON ats.id = s.tipo_id
-                WHERE empleado_id = ${empleado_id}
+                INNER JOIN aux_status_solicitud ass
+                ON s.estado_id = ass.id
+                WHERE e.id = ${empleado_id} AND ass.internal_type = 'STATUS_VALIDATED' AND s.fromBolsa = 0
                 GROUP BY empleado_id, tipo_id`;
 
   MySql.ejecutarQuery(query, [], (err: any, empleado: any) => {

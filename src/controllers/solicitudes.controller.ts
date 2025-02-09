@@ -3,13 +3,13 @@ import MySql from "../db/mysql";
 
 export const getSolicitudesByContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
-  const query = `SELECT c.id as contenedor_id, e.nombre, e.apellido1, e.apellido2, s.fecha_inicio, s.fecha_fin, s.nHoras,s.nDias, s.id,
-                        s.allDay, s.comentarios, s.estado_id, s.fromBolsa, s.resolucion,
+  const query = `SELECT c.id as contenedor_id, e.id as empleado_id, e.nombre, e.apellido1, e.apellido2, 
+                s.fecha_inicio, s.fecha_fin, s.nHoras,s.nDias, s.id as solicitud_id, s.allDay, s.comentarios, s.estado_id, s.fromBolsa, s.resolucion, s.gestionada_por,
                   CASE 
                     WHEN s.allDay = 0 THEN time_format(TIMEDIFF(s.fecha_fin, s.fecha_inicio),'%H:%i')
                     WHEN s.allDay = 1 THEN DATEDIFF(fecha_fin, fecha_inicio)
                   END AS duracion,
-                  ats.nombre as nombre_solicitud
+                  ats.nombre as nombre_solicitud, ats.id as tipo_solicitud_id
                 FROM contenedores c
                 INNER JOIN empleados e
                 ON c.id = e.contenedor_id
@@ -17,6 +17,8 @@ export const getSolicitudesByContenedor = (req: Request, res: Response) => {
                 ON s.empleado_id = e.id
                 INNER JOIN aux_tipo_solicitud ats
                 ON s.tipo_id = ats.id
+                LEFT JOIN empleados e2
+                ON s.gestionada_por = e2.id
                 WHERE c.id = ${contenedor_id}
                 ORDER BY s.fecha_inicio DESC`;
 
@@ -94,29 +96,30 @@ export const postSolicitud = (req: Request, res: Response) => {
   const query = `INSERT INTO solicitudes (tipo_id, empleado_id, estado_id, comentarios, allDay, nDias, nHoras, fromBolsa, fecha_inicio, fecha_fin) 
                  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const campos = [body.tipo_id, body.empleado_id, body.estado_id, body.comentarios, body.allDay, body.nDias, body.nHoras, body.usarBolsa, body.fecha_inicio, body.fecha_fin];
- 
+
   // tipo_id = 1 Vacaciones, 2 Asuntos propios;
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
-      if (err) {
-        return res.status(400).json({
-          msg: err,
-        });
-      }
-
-      res.status(200).json({
-        payload: result,
+    if (err) {
+      return res.status(400).json({
+        msg: err,
       });
+    }
+
+    res.status(200).json({
+      payload: result,
     });
-  };
+  });
+};
 
 export const validarSolicitud = (req: Request, res: Response) => {
   const { solicitud_id } = req.params;
+  const { body } = req;
 
-  const query = `UPDATE solicitudes SET estado_id = 2
-                 WHERE id = ${solicitud_id}`;
+  const query = `CALL sp_validar_solicitud(?, ?, ?, ?, ?, ?, ?)`;
+  const campos = [body.solicitud_id, body.fromBolsa, body.allDay, body.unidades, body.empleado_id, body.tipo_solicitud_id, body.gestionada_por];
 
-  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+  MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
       return res.status(400).json({
         msg: err,
