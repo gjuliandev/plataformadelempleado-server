@@ -1,11 +1,20 @@
 import { Router } from "express";
-import { getContadoresByContenedor, getContadoresByContenedorAndTipo, getContendor, getUnidadesMedida, postTipoSolicitud, putContenedor, putTipoSolicitud } from "../controllers/contenedores.controller";
+import {
+  getContadoresByContenedor,
+  getContadoresByContenedorAndTipo,
+  getContendor,
+  getMaxUsersByContenedor,
+  getUnidadesMedida,
+  postTipoSolicitud,
+  putContenedor,
+  putTipoSolicitud,
+} from "../controllers/contenedores.controller";
 
 const routes = Router();
 
+routes.get("/maxActivos/:contenedor_id/", getMaxUsersByContenedor);
 routes.get("/unidades-contador/:contenedor_id/", getContadoresByContenedor);
 routes.get("/:contenedor_id/unidades-tipo-contador/:tipo_id/", getContadoresByContenedorAndTipo);
-
 
 routes.get("/unidades-tipo-contador/:contenedor_id/", getContadoresByContenedor);
 routes.get("/contadores/unidades-medida", getUnidadesMedida);

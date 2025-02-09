@@ -71,6 +71,23 @@ export const getContadoresByContenedorAndTipo = (req: Request, res: Response) =>
   });
 };
 
+export const getMaxUsersByContenedor = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
+
+  const query = `SELECT maxActivos FROM contenedores WHERE id = ${contenedor_id} LIMIT 1`;
+
+  MySql.ejecutarQuery(query, [], (err: any, max: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: max,
+    });
+  });
+};
 
 export const putContenedor = (req: Request, res: Response) => {
   const { contenedor_id } = req.params;
@@ -109,8 +126,7 @@ export const postTipoSolicitud = (req: Request, res: Response) => {
   const query = `INSERT INTO aux_tipo_solicitud (contenedor_id, nombre, alias, unidades, unidad_medida, 
                   fecha_caducidad,  esBolsa) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  const campos = [body.contenedor_id, body.nombre, body.alias, body.unidades, body.unidad_medida, 
-                  body.fecha_caducidad,body.esBolsa];
+  const campos = [body.contenedor_id, body.nombre, body.alias, body.unidades, body.unidad_medida, body.fecha_caducidad, body.esBolsa];
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
@@ -135,10 +151,8 @@ export const putTipoSolicitud = (req: Request, res: Response) => {
   const query = `UPDATE  aux_tipo_solicitud SET 
                 nombre = ?, alias = ?, unidades = ?, fecha_caducidad = ?
                 WHERE id = ${contador_id}`;
-  
-  const campos = [ body.nombre, body.alias, body.unidades, body.fecha_caducidad];
 
-  
+  const campos = [body.nombre, body.alias, body.unidades, body.fecha_caducidad];
 
   MySql.ejecutarQuery(query, campos, (err: any, result: any) => {
     if (err) {
