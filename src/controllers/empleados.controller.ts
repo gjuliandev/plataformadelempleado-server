@@ -364,12 +364,11 @@ export const asignarContadorEmpleado = (req: Request, res: Response) => {
       throw err;
     }
 
-    const query = `INSERT INTO bolsa_contadores_empleados (empleado_id, tipo_solicitud_id, unidades, fecha_caducidad)
-                  VALUES (?, ?, ?, ?)`;
+    const query = `CALL sp_asignar_bolsa_empleado (?, ?, ?, ?)`;
 
     conn.beginTransaction((err) => {
       body.empleados_ids.forEach((empleado: any) => {
-        const campos = [empleado, body.contador_id, body.unidades, body.fecha_caducidad];
+        const campos = [ body.contador_id, empleado, body.unidades, body.fecha_caducidad];
         conn.query(query, campos, (error, results, fields) => {
           if (error) {
             conn.rollback();
@@ -377,22 +376,24 @@ export const asignarContadorEmpleado = (req: Request, res: Response) => {
               ok: "false",
               error,
             });
-          } else {
-            conn.commit((err) => {
-              if (err) {
-                conn.rollback();
-                return res.status(400).json({
-                  ok: "false",
-                  err,
-                });
-              } else {
-                return res.status(200).json({
-                  ok: "true",
-                });
-              }
-            });
           }
+          console.log('sin error foreach ', empleado);
         });
+      });
+      conn.commit((err) => {
+        if (err) {
+          conn.rollback();
+          console.log('con error haciendo commit ', err)
+          return res.status(400).json({
+            ok: "false",
+            err,
+          });
+        } else {
+          console.log('sin error vuelta total ')
+          return res.status(200).json({
+            ok: "true",
+          });
+        }
       });
     });
   });
