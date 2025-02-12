@@ -229,6 +229,32 @@ export const getTiposSolicitudByContenedor = (req: Request, res: Response) => {
   });
 };
 
+export const getTiposSolicitudByBolsaEmpleado = (req: Request, res: Response) => {
+  const { empleado_id } = req.params;
+
+  const query = `SELECT ats.id, ats.nombre, aum.name AS unidad_medida, bce.unidades, bce.fecha_caducidad
+                  FROM aux_tipo_solicitud ats
+                  INNER JOIN aux_unidades_medida aum
+                  ON ats.unidad_medida = aum.id
+                  INNER JOIN bolsa_contadores_empleados bce
+                  ON ats.id = bce.tipo_solicitud_id
+                  INNER JOIN empleados e
+                  ON e.id = bce.empleado_id
+                  WHERE e.id = ${empleado_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, result: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      payload: result,
+    });
+  });
+};
+
 export const getStatusSolicitud = (req: Request, res: Response) => {
   const query = `SELECT id, estado FROM aux_status_solicitud`;
 

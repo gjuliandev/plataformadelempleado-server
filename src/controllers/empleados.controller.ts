@@ -551,7 +551,8 @@ export const cambiarEstado = (req: Request, res: Response) => {
   });
 };
 
-// unidades que ha utilizado de ese tipos de solicitud el empleado
+// unidades que ha utilizado el empleado con ese de ese tipos de solicitud el empleado que 
+// estén validads y que no sean de bolsa
 export const getNumUnidadesBySolicitud = (req: Request, res: Response) => {
   const { empleado_id, tipo_solicitud } = req.params;
 
@@ -563,7 +564,7 @@ export const getNumUnidadesBySolicitud = (req: Request, res: Response) => {
                   FROM solicitudes s
                   INNER JOIN aux_status_solicitud ass
                   ON s.estado_id = ass.id
-                  WHERE ass.internal_type = 'STATUS_VALIDATED'
+                  WHERE ass.internal_type = 'STATUS_VALIDATED' AND fromBolsa = 0
                     AND empleado_id = ${empleado_id}
                     AND tipo_id = ${tipo_solicitud}
                   GROUP BY s.empleado_id`;

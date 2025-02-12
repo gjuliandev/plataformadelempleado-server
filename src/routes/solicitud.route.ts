@@ -6,6 +6,7 @@ import {
   getSolicitudesByEmpleado,
   getStatusSolicitud,
   getTiposSolicitud,
+  getTiposSolicitudByBolsaEmpleado,
   getTiposSolicitudByContenedor,
   postSolicitud,
   rechazarSolicitud,
@@ -17,6 +18,7 @@ const routes = Router();
 
 routes.get("/status-solicitud", getStatusSolicitud);
 routes.get("/tipos-solicitud/:contenedor_id", getTiposSolicitudByContenedor);
+routes.get("/tipos-solicitud-bolsa/:empleado_id", getTiposSolicitudByBolsaEmpleado);
 routes.get("/tipos-solicitud", getTiposSolicitud);
 routes.get("/:contenedor_id/contenedor", getSolicitudesByContenedor);
 routes.get("/:empleado_id/empleado", getSolicitudesByEmpleado);
