@@ -23,17 +23,33 @@ import auxTablesRouter from "../routes/aux-tables.routes";
 import cors from "cors";
 
 class Server {
+
+
+  //preproduccion
   private credentials = {
-    key: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/privkey.pem")
-      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/privkey.pem")
+    key: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/privkey.pem")
+      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/privkey.pem")
       : "",
-    cert: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/fullchain.pem")
-      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/fullchain.pem")
+    cert: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/fullchain.pem")
+      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/fullchain.pem")
       : "",
-    ca: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/chain.pem")
-      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/chain.pem")
+    ca: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/chain.pem")
+      ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api-pre.plataformadelempleado.es/chain.pem")
       : "",
   };
+
+  //Produccion
+  // private credentials = {
+  //   key: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/privkey.pem")
+  //     ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/privkey.pem")
+  //     : "",
+  //   cert: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/fullchain.pem")
+  //     ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/fullchain.pem")
+  //     : "",
+  //   ca: fs.existsSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/chain.pem")
+  //     ? fs.readFileSync("/home/plataformadelempleado/.certbot/config/live/api.plataformadelempleado.es/chain.pem")
+  //     : "",
+  // };
 
   public app: express.Application;
   private port: number;
