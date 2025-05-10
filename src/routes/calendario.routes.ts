@@ -1,12 +1,15 @@
 import { Router } from "express";
 import {
   assignCalendarToEmpleados,
+  createEventoByContenedor,
   deleteDiaFestivo,
+  deleteEventoByContenedor,
   getCalendariosByContendor,
   getCalendariosByEmpleado,
   getCalendariosWithDiasFestivosByContenedor,
   getDiasFestivosByCalendario,
   getDiasFestivosByEmpleado,
+  getEventosByContenedor,
   postCalendario,
   postDiaFestivo,
   putDiaFestivo,
@@ -14,6 +17,7 @@ import {
 } from "../controllers/calendarios.controller";
 
 const routes = Router();
+routes.get("/eventos/:contenedor_id", getEventosByContenedor);
 
 routes.get("/calendarios/empleado/:empleado_id", getCalendariosByEmpleado);
 routes.get("/calendariosWithFestivos/:contenedor_id", getCalendariosWithDiasFestivosByContenedor);
@@ -28,5 +32,8 @@ routes.delete("/dia-festivo/:dia_festivo_id", deleteDiaFestivo);
 
 routes.post("/assign-calendar", assignCalendarToEmpleados);
 routes.delete("/remove-assign-calendar", removeAssignCalendarToEmpleado);
+
+routes.post("/eventos", createEventoByContenedor);
+routes.delete("/eventos/:evento_id", deleteEventoByContenedor);
 
 export default routes;

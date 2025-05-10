@@ -274,3 +274,66 @@ export const removeAssignCalendarToEmpleado = (req: Request, res: Response) => {
     });
   });
 };
+
+export const getEventosByContenedor = (req: Request, res: Response) => {
+  const { contenedor_id } = req.params;
+
+  const query = `SELECT id, contenedor_id, description, text, startDate, endDate, recurrenceRule, recurrenceException, allDay, created_at, updated_at, deleted_at
+                  FROM eventos
+                  WHERE contenedor_id = ${contenedor_id};`;
+
+  MySql.ejecutarQuery(query, [], (err: any, eventos: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      payload: eventos,
+    });
+  });
+};
+
+export const createEventoByContenedor = (req: Request, res: Response) => {
+  const { body } = req;
+
+  const query = `INSERT INTO eventos
+                (contenedor_id, description, text, startDate, endDate, recurrenceRule, recurrenceException, allDay)
+                VALUES(?, ?, ?, ?, ?, ?, ?, ?);`;
+
+  const campos = [body.contenedor_id, body.description, body.text, body.startDate, body.endDate, body.recurrenceRule, body.recurrenceException, body.allDay];
+
+  MySql.ejecutarQuery(query, campos, (err: any, eventos: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      payload: eventos,
+    });
+  });
+};
+
+export const deleteEventoByContenedor = (req: Request, res: Response) => {
+  const { evento_id } = req.params;
+
+  const query = `DELETE FROM eventos WHERE id = ${evento_id}`;
+
+  MySql.ejecutarQuery(query, [], (err: any, eventos: any) => {
+    if (err) {
+      return res.status(400).json({
+        msg: err,
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      payload: eventos,
+    });
+  });
+};
